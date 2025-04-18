@@ -24,6 +24,6 @@ NumPy: Supports numerical operations and array manipulations.
 ![image](https://github.com/user-attachments/assets/a510d09a-172a-4c97-8e50-d2f92065d2cd)
 ![image](https://github.com/user-attachments/assets/84007045-1b8d-4806-96df-047eb559ce54)
 ![image](https://github.com/user-attachments/assets/a726b5eb-555c-46e0-9c13-ddc8c3b0d425)
-![image](https://github.com/user-attachments/assets/069bb113-0b3f-433f-af4e-0440bd4f4b8a)
+
 
 
