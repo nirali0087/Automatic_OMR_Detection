@@ -21,7 +21,9 @@ OpenCV: Image processing library for handling and analyzing OMR sheets.
 NumPy: Supports numerical operations and array manipulations.
 
 # 📸 Sample Output
+![image](https://github.com/user-attachments/assets/a510d09a-172a-4c97-8e50-d2f92065d2cd)
+![image](https://github.com/user-attachments/assets/84007045-1b8d-4806-96df-047eb559ce54)
+![image](https://github.com/user-attachments/assets/a726b5eb-555c-46e0-9c13-ddc8c3b0d425)
+![image](https://github.com/user-attachments/assets/069bb113-0b3f-433f-af4e-0440bd4f4b8a)
 
-![image](https://github.com/user-attachments/assets/3eae77b4-f5fb-4082-a11f-b137dec7d590)
-![image](https://github.com/user-attachments/assets/3349f3e7-84b6-49cd-b796-de17d7bb4cf6)
-![image](https://github.com/user-attachments/assets/21a261df-ce56-427f-ae8a-f99c54675755)
+
