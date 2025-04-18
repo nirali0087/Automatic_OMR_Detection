@@ -1,0 +1,141 @@
+#TITLE : Optical Mark Recognition (OMR) Mark sheet Automatic Checking System
+
+#LANGUAGE : PYTHON PROGRAMMING LANGUAGE
+
+#SUBJECT : COMPUTER VISION
+
+#PYTHON VERSION : Python 3.11.3
+
+#LIBRARY :
+    -> OpenCV-python library
+    -> NumPy library
+
+#INSTALLATION :
+    -> pip install opencv-python numpy
+                OR
+    -> pip install opencv-python
+    -> pip install numpy
+
+
+#WHY INSTALL AND USE THIS LIBRARY?
+
+    -> OpenCV (Open Source Computer Vision Library) is a powerful library for real-time computer vision tasks.
+    -> In this OMR grading system:
+            -> Image Reading and Manipulation:- image resizing, converting BGR to Gray scale, give edges to images...etc.
+
+            -> Contour Detection:- OpenCV provides functions to find contours in binary images,
+                                  which is detecting the regions corresponding to marked bubbles on the OMR sheet.
+
+            -> Thresholding:- OpenCV's thresholding functions are used to convert grayscale images to binary images,
+                             separating bubbles from background effectively.
+
+            -> Drawing and Annotation:- OpenCV allows drawing contours, bounding boxes, and text into images,
+                                       which is used to visualize detected bubbles, annotate correct/incorrect answers,
+                                       and display the score.
+
+    -> NumPy is a fundamental package for numerical computing in Python.
+    -> In this program include:
+            -> Array Operations:- NumPy arrays are used to represent image data and perform efficient numerical
+                                 operations (e.g., filtering, sorting).
+
+            -> Data Manipulation:- NumPy provides tools for reshaping, slicing, and indexing arrays, which are essential
+                                  for processing image data and handling contours.
+
+            -> Mathematical Functions:- NumPy's mathematical functions are used for calculations areas of contours,
+                                       comparison operations, and analysis of student responses.
+
+
+#REQUIRED ADJUSTING IN "OMR Settings" WINDOW :
+
+    -> Threshold
+    -> Min Area
+    -> Max Area
+    -> Questions
+    -> Choices
+    -> Zoom
+    -> Width
+    -> Height
+    -> X Offset
+    -> Y Offset
+    -> Parts
+    -> Press 'q' to quit.
+    -> Press 's' to save the results image file and print the score, student answers and correct answer in the console.
+
+#TRACKBAR USES:
+
+    -> Threshold :- Controls the binarization  threshold for converting the image to black and white(binary image).
+
+    -> Min Area and Max Area :- Filters the contours detected based on their area to the marked bubbles.
+
+    -> Questions :- total number of questions.
+
+    -> Choices :- Each question has how many choices that user can set.
+
+    -> Zoom :- Adjusts the zoom level for the image.
+
+    -> Width and Height :- set the dynamic dimensions of the cropping area.
+
+    -> X Offset and Y Offset :-  Sets the offset for the cropping area.
+
+    -> Parts :- Splits the image into vertical parts for processing large sheets.
+
+#HOW IT WORKS :
+
+    -> The script reads the OMR sheet image and converts it to grayscale image.
+    -> It applies a binary threshold to the image
+    -> By using trackbar, user can setup the all adjustment in the image.
+    -> Contours are detected and filtered based on the specified area range.
+    -> Then, find the valid contours based on the specific area and sorting the contours column and row wised.
+    -> The contours are sorted to identify the questions and choices.
+    -> For each question, the script identifies the marked bubble by comparing the area of filled regions.
+    -> The detected answers are compared with the predefined the answer key .
+    -> The score is calculated and displayed on the processed image.
+
+#SAVING RESULTS :
+
+    -> Press 's' to save the results.
+    -> The results image will be saved as omr_result.jpg in the current directory.
+    -> The console will display the score and the student's answers and correct answers.
+
+#DEPENDENCIES :
+
+    -> Python 3.6 or higher
+    -> OpenCV
+    -> NumPy
+
+#FEATURES :
+    -> Adjustable thresholding to binarize the image.
+    -> Dynamic contour area filtering to detect marked bubbles.
+    -> Customizable number of questions and choices.
+    -> Zoom and crop functionality for focused analysis.
+    -> Split image into parts for processing large sheets.
+    -> Real-time visualization of results and correctness.
+    -> Saving the results image and detailed scoring information.
+    -> User can use every and any number of question OMR marksheet By this program.
+
+#IMAGE SOURCES WITH ANSWER KEY'S ARRAY:
+
+-> 1) Images/img15.png    -> answer_key = [1, 2, 3, 1, 0, 2, 3, 0, 1, 2, 3, 1, 0, 2, 3]
+
+-> 2) Images/img30.png    -> answer_key = [1, 0, 2, 3, 0, 2, 1, 3, 0, 2, 1, 3, 2, 1, 0, 0, 1, 3, 0, 2,
+                                           1, 3, 0, 2, 1, 3, 0, 2, 1, 3]
+
+-> 3) Images/img50.jpeg   -> answer_key = [1, 2, 0, 3, 1, 3, 0, 2, 1, 3, 1, 3, 1, 0, 2, 3, 0, 2, 3, 1,
+                                           3, 1, 3, 1, 3, 1, 3, 1, 3, 0, 2, 3, 1, 0, 3, 1, 2, 1, 3, 1,
+                                           2, 3, 1, 3, 2, 0, 2, 3, 1, 3]
+
+-> 4) Images/img60.png    -> answer_key = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                           1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                           2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1]
+
+-> 5) Images/img100.jpeg  -> answer_key = [1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 3, 2, 1, 2, 3, 1, 2, 3, 2, 3,
+                                           0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3,
+                                           1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2,
+                                           0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3,
+                                           1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2]
+
+-> 6) Images/MCQ_100.jpeg -> answer_key = [0, 2, 3, 1, 2, 1, 3, 0, 2, 1, 3, 1, 2, 0, 3, 1, 3, 1, 3, 1,
+                                           2, 0, 2, 3, 1, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1,
+                                           0, 1, 2, 3, 2, 1, 0, 1, 2, 3, 0, 1, 2, 3, 2, 1, 0, 1, 2, 3,
+                                           2, 1, 0, 1, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0, 3, 2, 1, 0, 1,
+                                           2, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0, 1, 2, 0]

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMR Checker - Upload</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+        --primary-color: #00c8ff;
+        --secondary-color: #ff4d8d;
+        --dark-bg: #0a192f;
+        --light-accent: #64ffda;
+        --panel-bg: rgba(16, 42, 87, 0.7);
+        --text-primary: #ffffff;
+        --text-secondary: #a8b2d1;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Holographic effect */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle at 20% 30%, rgba(0, 200, 255, 0.1) 0%, transparent 40%),
+            radial-gradient(circle at 80% 70%, rgba(100, 255, 218, 0.1) 0%, transparent 40%);
+        z-index: -1;
+    }
+
+    /* Grid pattern */
+    body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            linear-gradient(rgba(100, 255, 218, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(100, 255, 218, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
+        z-index: -1;
+    }
+
+    /* Main layout */
+    .app-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        padding: 30px;
+        max-width: 1800px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .left-column, .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    /* Panel styling */
+    .panel {
+        background: var(--panel-bg);
+        color: white;
+        border-radius: 16px;
+        padding: 25px;
+        border: 1px solid rgba(100, 255, 218, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary-color), var(--light-accent));
+    }
+
+    .panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .panel h3 {
+        font-family: 'Orbitron', sans-serif;
+        color: var(--light-accent);
+        margin: 0;
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .panel h3::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary-color), var(--light-accent));
+        border-radius: 3px;
+    }
+
+    /* Upload box */
+    .upload-box {
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed rgba(0, 200, 255, 0.5);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: rgba(10, 25, 47, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload-box.highlight {
+        border-color: var(--light-accent);
+        background: rgba(100, 255, 218, 0.1);
+    }
+
+    .file-label {
+        display: inline-block;
+        padding: 15px 30px;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 200, 255, 0.4);
+    }
+
+    .file-name {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 15px;
+        font-family: 'Poppins', monospace;
+    }
+
+    /* Preview images */
+    .preview-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        height: 100%;
+    }
+
+    .preview-box {
+        height: 300px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(0, 200, 255, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .preview-box::before {
+        content: attr(data-title);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 8px;
+        background: rgba(10, 25, 47, 0.9);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.9rem;
+        color: var(--light-accent);
+        text-align: center;
+        z-index: 1;
+    }
+
+    .preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #0a192f;
+        display: block;
+    }
+
+    /* Control groups */
+    .control-group {
+        margin-bottom: 20px;
+    }
+
+    .control-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .control-label {
+        width: 180px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    /* Custom range sliders */
+    .slider-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        flex: 1;
+        height: 6px;
+        background: rgba(0, 200, 255, 0.3);
+        border-radius: 3px;
+        outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        background: var(--light-accent);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 5px rgba(100, 255, 218, 0.3);
+    }
+
+    .control-value {
+        font-family: 'Poppins', monospace;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 200, 255, 0.2);
+        min-width: 50px;
+        text-align: center;
+    }
+
+    /* Answer key grid */
+    .answer-key-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        border: 1px solid rgba(0, 200, 255, 0.2);
+    }
+
+    .answer-key-item {
+        background: rgba(10, 25, 47, 0.7);
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 200, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .answer-key-item:hover {
+        border-color: var(--light-accent);
+        box-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
+    }
+
+    .answer-key-item label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--light-accent);
+        font-size: 0.9rem;
+    }
+
+    .answer-key-item select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: 1px solid rgba(0, 200, 255, 0.5);
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 12px 25px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 200, 255, 0.4);
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 77, 141, 0.6);
+    }
+
+    /* Form elements */
+    .answer-key-select,
+    .answer-key-controls input[type="text"] {
+        flex: 1;
+        padding: 12px 15px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: 1px solid rgba(0, 200, 255, 0.5);
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    /* Answer key controls */
+    .answer-key-controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    /* Header */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 50px;
+        background: rgba(10, 25, 47, 0.8);
+        color: white;
+        border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .logo {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        letter-spacing: 2px;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 25px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 500;
+        letter-spacing: 1px;
+        position: relative;
+        padding: 5px 0;
+        transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+        color: var(--light-accent);
+    }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+        border-top: 1px solid rgba(100, 255, 218, 0.2);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* Submit button container */
+    .submit-container {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    #submitBtn {
+        padding: 15px 40px;
+        font-size: 1.1rem;
+    }
+
+    /* Responsive design */
+    @media (max-width: 1200px) {
+        .app-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .control-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .control-label {
+            width: 100%;
+        }
+
+        .slider-container {
+            width: 100%;
+        }
+
+        .answer-key-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+
+        .navbar {
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .nav-links {
+            gap: 15px;
+        }
+
+        .preview-box {
+            height: 250px;
+        }
+    }
+
+    /* Scan line animation */
+    .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(0, 200, 255, 0.3) 50%,
+            transparent 100%);
+        animation: scan 8s linear infinite;
+        z-index: -1;
+        opacity: 0.7;
+    }
+
+    @keyframes scan {
+        0% { top: -10px; }
+        100% { top: 100%; }
+    }
+</style>
+</head>
+<body>
+    <div class="scan-line"></div>
+    <nav class="navbar">
+        <div class="logo">OMR CHECKER</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('index') }}">Upload</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+    </nav>
+
+    <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+        <div class="app-container">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Upload Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>UPLOAD OMR SHEET</h3>
+                    </div>
+                    <div class="upload-box" id="uploadBox">
+                        <label for="fileInput" class="file-label">CHOOSE IMAGE FILE</label>
+                        <input type="file" name="file" id="fileInput" required accept="image/*" style="display: none;">
+                        <div class="file-name" id="fileName">No file selected</div>
+                    </div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>IMAGE PREVIEW</h3>
+                    </div>
+                    <div class="preview-container">
+                        <div class="preview-box" data-title="ORIGINAL IMAGE">
+                            <img id="originalPreview" class="preview-image" style="display: none;">
+                        </div>
+                        <div class="preview-box" data-title="PROCESSED PREVIEW">
+                            <img id="processedPreview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Processing Parameters Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>PROCESSING PARAMETERS</h3>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-row">
+                            <span class="control-label">Threshold</span>
+                            <div class="slider-container">
+                                <input type="range" id="threshold" name="threshold" min="0" max="255" value="{{ params.threshold }}">
+                                <span class="control-value" id="thresholdValue">{{ params.threshold }}</span>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Min Bubble Area</span>
+                            <div class="slider-container">
+                                <input type="range" id="min_area" name="min_area" min="0" max="500" value="{{ params.min_area }}">
+                                <span class="control-value" id="minAreaValue">{{ params.min_area }}</span>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Max Bubble Area</span>
+                            <div class="slider-container">
+                                <input type="range" id="max_area" name="max_area" min="500" max="5000" value="{{ params.max_area }}">
+                                <span class="control-value" id="maxAreaValue">{{ params.max_area }}</span>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Questions</span>
+                            <div class="slider-container">
+                                <input type="range" id="questions" name="questions" min="1" max="100" value="{{ params.questions }}">
+                                <span class="control-value" id="questionsValue">{{ params.questions }}</span>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Choices</span>
+                            <div class="slider-container">
+                                <input type="range" id="choices" name="choices" min="2" max="8" value="{{ params.choices }}">
+                                <span class="control-value" id="choicesValue">{{ params.choices }}</span>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Parts (Columns)</span>
+                            <div class="slider-container">
+                                <input type="range" id="parts" name="parts" min="1" max="5" value="{{ params.parts }}">
+                                <span class="control-value" id="partsValue">{{ params.parts }}</span>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <span class="control-label">Zoom (%)</span>
+                            <div class="slider-container">
+                                <input type="range" id="zoom" name="zoom" min="50" max="200" value="{{ params.zoom }}">
+                                <span class="control-value" id="zoomValue">{{ params.zoom }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-container">
+                        <button type="button" id="updatePreview" class="btn">UPDATE PREVIEW</button>
+                    </div>
+                </div>
+
+                <!-- Answer Key Configuration Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>ANSWER KEY CONFIGURATION</h3>
+                    </div>
+                    <div class="answer-key-controls">
+                        <select id="answerKeySelect" class="answer-key-select">
+                            <option value="">-- Select Answer Key --</option>
+                            {% for key in answer_keys %}
+                            <option value="{{ key }}">{{ key }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" id="loadAnswerKey" class="btn">LOAD</button>
+                    </div>
+                    <div class="answer-key-controls">
+                        <input type="text" id="newKeyName" placeholder="New Answer Key Name" class="answer-key-select">
+                        <button type="button" id="saveAnswerKey" class="btn">SAVE CURRENT</button>
+                    </div>
+                    <div class="answer-key-grid" id="answerKeyGrid">
+                        <!-- Dynamically generated answer key controls -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-container">
+                <button type="submit" class="btn" id="submitBtn">EVALUATE OMR SHEET</button>
+            </div>
+        </div>
+    </form>
+
+    <footer class="footer">
+        <p>&copy; 2025 OMR CHECKER | AI EVALUATION SYSTEM</p>
+    </footer>
+
+    <script>
+        // File input handling
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const uploadBox = document.getElementById('uploadBox');
+        const originalPreview = document.getElementById('originalPreview');
+        const processedPreview = document.getElementById('processedPreview');
+        const updatePreviewBtn = document.getElementById('updatePreview');
+        const submitBtn = document.getElementById('submitBtn');
+        const questionsSlider = document.getElementById('questions');
+        const choicesSlider = document.getElementById('choices');
+        const partsSlider = document.getElementById('parts');
+        const answerKeyGrid = document.getElementById('answerKeyGrid');
+        const answerKeySelect = document.getElementById('answerKeySelect');
+        const loadAnswerKeyBtn = document.getElementById('loadAnswerKey');
+        const saveAnswerKeyBtn = document.getElementById('saveAnswerKey');
+        const newKeyName = document.getElementById('newKeyName');
+
+        let currentAnswerKey = Array(parseInt(questionsSlider.value)).fill(0);
+
+        // Update slider value displays
+        function setupSlider(sliderId, valueId) {
+            const slider = document.getElementById(sliderId);
+            const value = document.getElementById(valueId);
+            slider.addEventListener('input', function() {
+                value.textContent = this.value;
+                if (sliderId === 'questions') {
+                    updateAnswerKeyControls();
+                }
+            });
+        }
+
+        // Initialize all sliders
+        setupSlider('threshold', 'thresholdValue');
+        setupSlider('min_area', 'minAreaValue');
+        setupSlider('max_area', 'maxAreaValue');
+        setupSlider('questions', 'questionsValue');
+        setupSlider('choices', 'choicesValue');
+        setupSlider('parts', 'partsValue');
+        setupSlider('zoom', 'zoomValue');
+
+        // Update answer key controls based on current settings
+        function updateAnswerKeyControls() {
+            const questions = parseInt(questionsSlider.value);
+            const choices = parseInt(choicesSlider.value);
+
+            // Adjust current answer key array size
+            if (currentAnswerKey.length < questions) {
+                currentAnswerKey = currentAnswerKey.concat(Array(questions - currentAnswerKey.length).fill(0));
+            } else if (currentAnswerKey.length > questions) {
+                currentAnswerKey = currentAnswerKey.slice(0, questions);
+            }
+
+            // Generate HTML for answer key controls
+            let html = '';
+            for (let i = 0; i < questions; i++) {
+                html += `
+                <div class="answer-key-item">
+                    <label>Q${i + 1}</label>
+                    <select class="answer-select" data-question="${i}">
+                        ${Array.from({length: choices}, (_, j) => `
+                            <option value="${j}" ${currentAnswerKey[i] === j ? 'selected' : ''}>${String.fromCharCode(65 + j)}</option>
+                        `).join('')}
+                    </select>
+                </div>`;
+            }
+
+            answerKeyGrid.innerHTML = html;
+
+            // Add event listeners to answer selects
+            document.querySelectorAll('.answer-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const question = parseInt(this.dataset.question);
+                    currentAnswerKey[question] = parseInt(this.value);
+                });
+            });
+        }
+
+        // Initialize answer key controls
+        updateAnswerKeyControls();
+
+        // File selection handling
+        fileInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    originalPreview.src = event.target.result;
+                    originalPreview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(this.files[0]);
+                fileName.textContent = this.files[0].name;
+                uploadBox.classList.add('highlight');
+            } else {
+                fileName.textContent = 'No file selected';
+                originalPreview.style.display = 'none';
+                processedPreview.style.display = 'none';
+                uploadBox.classList.remove('highlight');
+            }
+        });
+
+        // Update preview function
+        updatePreviewBtn.addEventListener('click', function() {
+            if (!fileInput.files || !fileInput.files[0]) {
+                alert('Please select an image file first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('threshold', document.getElementById('threshold').value);
+            formData.append('min_area', document.getElementById('min_area').value);
+            formData.append('max_area', document.getElementById('max_area').value);
+            formData.append('questions', document.getElementById('questions').value);
+            formData.append('choices', document.getElementById('choices').value);
+            formData.append('parts', document.getElementById('parts').value);
+            formData.append('zoom', document.getElementById('zoom').value);
+
+            fetch('/preview', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.processed_image) {
+                    processedPreview.src = data.processed_image;
+                    processedPreview.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Load answer key
+        loadAnswerKeyBtn.addEventListener('click', function() {
+            const keyName = answerKeySelect.value;
+            if (!keyName) return;
+
+            fetch('/load_answer_key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `key_name=${encodeURIComponent(keyName)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    currentAnswerKey = data.answers;
+                    updateAnswerKeyControls();
+                    alert('Answer key loaded successfully!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load answer key');
+            });
+        });
+
+        // Save answer key
+        saveAnswerKeyBtn.addEventListener('click', function() {
+            const name = newKeyName.value.trim();
+            if (!name) {
+                alert('Please enter a name for the answer key');
+                return;
+            }
+
+            fetch('/save_answer_key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    answers: currentAnswerKey
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Answer key saved successfully!');
+                    // Refresh the answer key dropdown
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save answer key');
+            });
+        });
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            if (!fileInput.files || !fileInput.files[0]) {
+                e.preventDefault();
+                alert('Please select an OMR sheet image first.');
+                return;
+            }
+
+            // Add current answer key to form data
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'answer_key';
+            hiddenInput.value = JSON.stringify(currentAnswerKey);
+            this.appendChild(hiddenInput);
+
+            // Show processing indicator
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+        });
+
+        // Initialize with default answer key if none is loaded
+        if (answerKeySelect.options.length > 1) {
+            answerKeySelect.value = "{{ params.answer_key_name or '' }}";
+            if (answerKeySelect.value) {
+                loadAnswerKeyBtn.click();
+            }
+        }
+    </script>
+</body>
+</html>
