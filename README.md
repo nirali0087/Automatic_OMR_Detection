@@ -1,4 +1,4 @@
-Automatic OMR Detection
+# Automatic OMR Detection
 Automatic OMR Detection is a Python-based application that automates the evaluation of Optical Mark Recognition (OMR) sheets, commonly used in multiple-choice examinations. By leveraging image processing techniques, this system accurately detects and grades marked answers, streamlining the assessment process.
 
 📌 Features
